@@ -1,0 +1,22 @@
+{
+  "name": "at-migrate",
+  "version": "0.0.1",
+  "description": "Migration tool for legacy Adapt authoring tool installations",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/taylortom/at-migrate.git"
+  },
+  "author": "Thomas Taylor <hello@tomtaylor.name>",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/taylortom/at-migrate/issues"
+  },
+  "homepage": "https://github.com/taylortom/at-migrate#readme",
+  "dependencies": {
+    "mongodb": "^4.1.3"
+  }
+}
