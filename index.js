@@ -9,16 +9,22 @@ async function run() {
     };
     const exporter = new Exporter(options);
     await exporter.init();
-    await exporter.run();
+    const { courses, roles, users, exportPath } = await exporter.run();
 
-    options.exportPath = exporter.exportPath;
+    options.courses = courses;
+    options.oldRoles = roles;
+    options.oldUsers = users;
+    options.exportPath = exportPath;
 
     const importer = new Importer(options);
     await importer.init();
     const importData = await importer.run();
 
     if(importData.fail) {
-      console.log(importData.fail);
+      console.log('failed');
+      // console.log(importData.fail);
+    } else {
+      console.log('Success');
     }
   } catch(e) {
     console.log(e);
