@@ -2,6 +2,8 @@ import Exporter from "./lib/Exporter.cjs";
 import Importer from "./lib/Importer.js";
 
 async function run() {
+  const errors = [];
+  let app;
   try {
     const options = {
       oldToolPath: '/home/tom/Projects/adapt/adapt_authoring',
@@ -18,17 +20,17 @@ async function run() {
 
     const importer = new Importer(options);
     await importer.init();
-    const importData = await importer.run();
+    app = importer.app;
+    const { success, fail } = await importer.run();
 
-    if(importData.fail) {
-      console.log('failed');
-      // console.log(importData.fail);
-    } else {
-      console.log('Success');
-    }
+    if(fail) errors.push(...(fail instanceof Error ? [fail] : Object.values(fail)));
   } catch(e) {
-    console.log(e);
+    errors.push(e);
   }
+  errors.forEach(e => {
+    let msg = app?.lang.translate('en', e.code, e.data);
+    console.log(msg ?? e);
+  });  
   // @todo cleanup
   process.exit();
 }
