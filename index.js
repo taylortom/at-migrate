@@ -30,6 +30,7 @@ async function run() {
   errors.forEach(e => {
     let msg = app?.lang.translate('en', e.code, e.data);
     console.log(msg ?? e);
+    if(e.data) console.log(e.data);
   });  
   // @todo cleanup
   process.exit();
