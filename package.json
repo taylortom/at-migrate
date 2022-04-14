@@ -4,6 +4,7 @@
   "description": "Migration tool for legacy Adapt authoring tool installations",
   "type": "module",
   "main": "index.js",
+  "bin": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
