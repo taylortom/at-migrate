@@ -1,14 +1,12 @@
 import Exporter from "./lib/Exporter.cjs";
 import Importer from "./lib/Importer.js";
+import prompts from 'prompts';
 
 async function run() {
   const errors = [];
   let app;
   try {
-    const options = {
-      oldToolPath: '/home/tom/Projects/adapt/adapt_authoring',
-      newToolPath: '/home/tom/Projects/1_scratch/adapt-authoring'
-    };
+    const options = await getInput();
     const exporter = new Exporter(options);
     await exporter.init();
     const { courses, roles, users, exportPath } = await exporter.run();
@@ -34,6 +32,22 @@ async function run() {
   });  
   // @todo cleanup
   process.exit();
+}
+
+async function getInput() {
+  try {
+    return await prompts([{
+      type: 'text',
+      name: 'oldToolPath',
+      message: 'Enter the directory of the legacy authoring tool'
+    }, {
+      type: 'text',
+      name: 'newToolPath',
+      message: 'Enter the directory of the new authoring tool'
+    }]);
+  } catch(e) {
+    console.log(e);
+  }
 }
 
 export default run();
