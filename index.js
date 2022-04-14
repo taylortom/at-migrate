@@ -44,6 +44,10 @@ async function getInput() {
       type: 'text',
       name: 'newToolPath',
       message: 'Enter the directory of the new authoring tool'
+    }, {
+      type: 'confirm',
+      name: 'forceRebuild',
+      message: 'Do you want to force a rebuild of each course prior to export? (this will greatly increase export time)'
     }]);
   } catch(e) {
     console.log(e);
