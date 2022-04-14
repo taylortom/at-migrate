@@ -1,6 +1,6 @@
 {
   "name": "at-migrate",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Migration tool for legacy Adapt authoring tool installations",
   "type": "module",
   "main": "index.js",
