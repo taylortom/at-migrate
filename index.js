@@ -1,16 +1,26 @@
 import Exporter from "./lib/Exporter.cjs";
 import Importer from "./lib/Importer.js";
+import prompts from 'prompts';
 
 async function run() {
+  console.log('##\n## at-migrate\n##\n');
+  
+  const { sourcePath } = await prompts([{
+    type: 'text',
+    name: 'sourcePath',
+    message: `Please specify the path to the legacy app source`,
+    initial: process.cwd()
+  }]);
+
   const [action] = process.argv.slice(2);
   const errors = [];
   try {
     switch(action) {
       case 'export':
-        await runExport({ path: process.cwd(), forceRebuild: true });
+        await runExport({ sourcePath });
         break;
       case 'import':
-        await runImport({ apiUrl: 'http://localhost:5678/api' });
+        await runImport({ sourcePath, apiUrl: 'http://localhost:5678/api' });
         break;
       default:
         throw new Error('Invalid action');
