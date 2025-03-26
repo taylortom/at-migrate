@@ -5,6 +5,7 @@ import prompts from 'prompts';
 async function run() {
   console.log('##\n## at-migrate\n##\n');
   
+
   const { sourcePath } = await prompts([{
     type: 'text',
     name: 'sourcePath',
@@ -20,7 +21,7 @@ async function run() {
         await runExport({ sourcePath });
         break;
       case 'import':
-        await runImport({ sourcePath, apiUrl: 'http://localhost:5678/api' });
+        await runImport({ sourcePath });
         break;
       default:
         throw new Error('Invalid action');
