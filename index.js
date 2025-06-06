@@ -1,5 +1,6 @@
 import Exporter from "./lib/Exporter.cjs";
 import Importer from "./lib/Importer.js";
+import path from 'path';
 import prompts from 'prompts';
 
 async function run() {
@@ -10,7 +11,7 @@ async function run() {
     type: 'text',
     name: 'sourcePath',
     message: `Please specify the path to the legacy app source`,
-    initial: process.cwd()
+    initial: 'D:\\Projects\\scratch\\adapt_authoring' //process.cwd()
   }]);
 
   const [action] = process.argv.slice(2);
@@ -42,9 +43,13 @@ async function runExport(options) {
 async function runImport(options) {
   const importer = new Importer(options);
   await importer.init();
-  const { success, fail } = await importer.run();
-  if(success.length) console.log(success);
-  if(fail.length) console.log(fail);
+  const { success, error, skip } = await importer.run();
+  console.log(``);
+  console.log(`## Import completed.`);
+  console.log(`## Success: ${success.length}`);
+  console.log(`## Error: ${error.length}`);
+  console.log(`## Skipped: ${skip.length}`);
+  console.log(`## See ${path.join(options.sourcePath, 'at-migrate', 'export.json')} for full details.`);
 }
 
 export default run();
