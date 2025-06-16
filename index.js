@@ -11,7 +11,7 @@ async function run() {
     type: 'text',
     name: 'sourcePath',
     message: `Please specify the path to the legacy app source`,
-    initial: 'D:\\Projects\\scratch\\adapt_authoring' //process.cwd()
+    initial: process.cwd()
   }]);
 
   const [action] = process.argv.slice(2);

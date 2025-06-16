@@ -19,8 +19,7 @@
   },
   "homepage": "https://github.com/taylortom/at-migrate#readme",
   "dependencies": {
-    "form-data": "^4.0.2",
-    "mongodb": "^4.3.0",
+    "mongodb": "^3.7.4",
     "prompts": "^2.4.2",
     "zipper": "github:adapt-security/zipper"
   }
