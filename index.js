@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 import Exporter from "./lib/Exporter.cjs";
 import Importer from "./lib/Importer.js";
 import path from 'path';
