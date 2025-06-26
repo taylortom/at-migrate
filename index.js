@@ -5,9 +5,15 @@ import path from 'path';
 import prompts from 'prompts';
 
 const IS_DEBUG = true;
+const LIMIT = 5;
 
 async function run() {
-  console.log('##\n## at-migrate\n##\n');
+  console.log(`##`);
+  console.log(`## at-migrate`);
+  if(IS_DEBUG ?? LIMIT) console.log(`##`);
+  if(IS_DEBUG) console.log(`## !! IS_DEBUG enabled`);
+  if(LIMIT) console.log(`## !! LIMIT set to ${LIMIT}`);
+  console.log(`##`);
   
 
   const { sourcePath } = await prompts([{
@@ -22,10 +28,10 @@ async function run() {
   try {
     switch(action) {
       case 'export':
-        await runExport({ sourcePath, IS_DEBUG });
+        await runExport({ sourcePath, IS_DEBUG, LIMIT });
         break;
       case 'import':
-        await runImport({ sourcePath, IS_DEBUG });
+        await runImport({ sourcePath, IS_DEBUG, LIMIT });
         break;
       default:
         throw new Error('Invalid action');
