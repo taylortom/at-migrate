@@ -4,6 +4,8 @@ import Importer from "./lib/Importer.js";
 import path from 'path';
 import prompts from 'prompts';
 
+const IS_DEBUG = true;
+
 async function run() {
   console.log('##\n## at-migrate\n##\n');
   
@@ -20,10 +22,10 @@ async function run() {
   try {
     switch(action) {
       case 'export':
-        await runExport({ sourcePath });
+        await runExport({ sourcePath, IS_DEBUG });
         break;
       case 'import':
-        await runImport({ sourcePath });
+        await runImport({ sourcePath, IS_DEBUG });
         break;
       default:
         throw new Error('Invalid action');
