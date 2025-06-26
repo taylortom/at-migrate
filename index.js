@@ -54,11 +54,14 @@ async function runImport(options) {
   await importer.init();
   const { success, error, skip } = await importer.run();
   console.log(``);
+  console.log(`##`);
   console.log(`## Import completed.`);
+  console.log(`##`);
   console.log(`## Success: ${success.length}`);
   console.log(`## Error: ${error.length}`);
   console.log(`## Skipped: ${skip.length}`);
   console.log(`## See ${path.join(options.sourcePath, 'at-migrate', 'export.json')} for full details.`);
+  console.log(`##`);
 }
 
 export default run();
