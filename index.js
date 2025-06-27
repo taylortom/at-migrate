@@ -5,7 +5,7 @@ import path from 'path';
 import prompts from 'prompts';
 
 const IS_DEBUG = true;
-const LIMIT = 5;
+const LIMIT = undefined;
 
 async function run() {
   console.log(`##`);
