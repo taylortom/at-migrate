@@ -39,7 +39,10 @@ async function run() {
   } catch(e) {
     errors.push(e);
   }
-  errors.forEach(e => console.log(e, '\n', JSON.stringify(e?.data, null, 2)));  
+  errors.forEach(e => {
+    console.log(e, '\n', JSON.stringify(e?.data, null, 2));
+    if(IS_DEBUG) console.log(e.stack);
+  });
   process.exit();
 }
 
