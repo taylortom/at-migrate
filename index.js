@@ -4,10 +4,12 @@ import Importer from "./lib/Importer.js";
 import path from 'path';
 import prompts from 'prompts';
 
-const IS_DEBUG = true;
-const LIMIT = undefined;
-
 async function run() {
+  const [action, ...flags] = process.argv.slice(2);
+  
+  const IS_DEBUG = flags.includes('--debug');
+  const LIMIT = flags.find(f => f.startsWith('--limit='))?.replace('--limit=', '');
+  
   console.log(`##`);
   console.log(`## at-migrate`);
   if(IS_DEBUG ?? LIMIT) console.log(`##`);
@@ -23,7 +25,6 @@ async function run() {
     initial: process.cwd()
   }]);
 
-  const [action] = process.argv.slice(2);
   const errors = [];
   try {
     switch(action) {
