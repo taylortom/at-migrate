@@ -29,7 +29,7 @@ async function run() {
   try {
     switch(action) {
       case 'export':
-        await runExport({ sourcePath, IS_DEBUG, LIMIT });
+        await runExport({ sourcePath, IS_DEBUG, LIMIT, exportCourses: !flags.includes('--no-courses') });
         break;
       case 'import':
         await runImport({ sourcePath, IS_DEBUG, LIMIT });
