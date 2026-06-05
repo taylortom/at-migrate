@@ -73,14 +73,15 @@ The exporter then:
 1. Loads `conf/config.json` and connects to the legacy MongoDB.
 2. Boots the legacy app (so its `adapt` output plugin is available) with the current user overridden to the installation's *Super Admin*.
 3. Exports `roles` and `users` (mapped down to the fields needed by the import phase).
-4. Exports each `course`: builds a `.zip` via the legacy `adapt` output plugin and copies it into the export folder.
-5. Writes everything to `export.json` and stops the legacy app.
+4. Exports `themepresets` (course theme presets), and records each course's preset link (read from the `config` collection's `_themePreset`).
+5. Exports each `course`: builds a `.zip` via the legacy `adapt` output plugin and copies it into the export folder.
+6. Writes everything to `export.json` and stops the legacy app.
 
 **Output layout** (written under the source path):
 
 ```
 <sourcePath>/at-migrate/<timestamp>/
-├── export.json        # roles, users, courses metadata + success/error status
+├── export.json        # roles, users, theme presets, courses metadata + success/error status
 ├── <courseId>.zip     # one Adapt course zip per exported course
 └── heroes/            # (reserved for course hero images)
 ```
@@ -105,7 +106,8 @@ The importer then:
 1. Authenticates against the v1 API (`auth/check`).
 2. Compares exported course titles against courses already present in the v1 instance, and offers to **Continue**, **Restart** or **Exit**.
 3. **Imports users**: prompts you once to map each legacy role to a v1 role, then registers each missing user (existing users, matched by email, are skipped). Imported users are created with a random password.
-4. **Imports courses**: unzips each course bundle, strips blacklisted plugins (currently `adapt-notepad`), and posts it to the v1 API's `adapt/import` endpoint.
+4. **Imports theme presets**: creates each exported preset as a `coursethemepresets` record (presets matching an existing one by `displayName` + `parentTheme` are skipped).
+5. **Imports courses**: unzips each course bundle, strips blacklisted plugins (currently `adapt-notepad`), and — if the course had a theme preset — writes the preset's variables into the bundle's `course.json` as `themeVariables` so they persist when the course is created. It then posts the bundle to the v1 API's `adapt/import` endpoint. (This is equivalent to the coursetheme module's apply route, which only sets `themeVariables`; it requires the preset's `parentTheme` to be installed in the target, otherwise the import strips the unknown variables.)
 
 Progress is persisted to `import.json` after each course, so an interrupted import can be safely resumed.
 
