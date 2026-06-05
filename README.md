@@ -13,7 +13,7 @@ The two phases talk only through files on disk, so you can export and import on 
 
 ## Requirements
 
-- **Node.js 18+**.
+- **Node.js** — the **export** phase needs 16.7+ (it can run on the legacy server); the **import** phase needs 18+ (ideally 22+).
 - Local access to your **legacy `adapt_authoring` source tree**, with its dependencies installed (the exporter boots the legacy app to build courses).
 - Access to the legacy installation's **MongoDB** (the tool reads the connection string from its `conf/config.json`).
 - For import: the URL of your **v1 `adapt-authoring` API** and an **auth token** for a user with sufficient permissions.
