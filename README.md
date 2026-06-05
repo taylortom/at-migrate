@@ -134,7 +134,7 @@ On completion a summary is printed:
 
 ## Notes & known limitations
 
-- **Hero image migration is currently disabled.** Hero images are copied during export, but the code that re-attaches them to courses on import is commented out, so hero images are *not* migrated.
+- **Hero image migration was recently re-enabled and should be verified against a live v1 instance.** Hero images are copied during export, and on import the file is placed in the course's `src/course/en/assets/` folder with `course.json`'s `heroImage` set to the src-relative asset path. This had previously been disabled; confirm hero images render correctly after an import before relying on it.
 - **Auth tokens and the DB connection string are stored in plaintext** on disk (`import.json` / read from `config.json`). Treat the export folder as sensitive.
 - The `adapt-notepad` extension is stripped from courses during import (see `pluginBlacklist` in `lib/Importer.js`).
 - This tool is purpose-built for the `adapt_authoring` → `adapt-authoring` migration and assumes the legacy directory structure and the v1 API's contract; it is not a general-purpose tool.
