@@ -12,7 +12,7 @@ async function run() {
   
   console.log(`##`);
   console.log(`## at-migrate`);
-  if(IS_DEBUG ?? LIMIT) console.log(`##`);
+  if(IS_DEBUG || LIMIT) console.log(`##`);
   if(IS_DEBUG) console.log(`## !! IS_DEBUG enabled`);
   if(LIMIT) console.log(`## !! LIMIT set to ${LIMIT}`);
   console.log(`##`);
