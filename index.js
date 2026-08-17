@@ -56,7 +56,7 @@ async function runExport(options) {
 async function runImport(options) {
   const importer = new Importer(options);
   await importer.init();
-  const { success, error, skip } = await importer.run();
+  const { success, error, skip, warn } = await importer.run();
   console.log(``);
   console.log(`##`);
   console.log(`## Import completed.`);
@@ -64,7 +64,14 @@ async function runImport(options) {
   console.log(`## Success: ${success.length}`);
   console.log(`## Error: ${error.length}`);
   console.log(`## Skipped: ${skip.length}`);
-  console.log(`## See ${path.join(options.sourcePath, 'at-migrate', 'export.json')} for full details.`);
+  console.log(`## Warnings: ${warn.length}`);
+  if(warn.length) {
+    // these courses imported, but with something dropped along the way, so list them out:
+    // a warning buried in the log of a long run is easy to miss
+    console.log(`##`);
+    warn.forEach(w => console.log(`## ! ${w.courseTitle ? `${w.courseTitle}: ` : ''}${w.message}`));
+  }
+  console.log(`## See ${path.join(importer.importData.exportPath, 'import.json')} for full details.`);
   console.log(`##`);
 }
 

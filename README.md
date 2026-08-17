@@ -54,9 +54,9 @@ You'll be asked for the path to your legacy app and whether to force a full rebu
 npx taylortom/at-migrate import
 ```
 
-You'll be asked to point at the export, and for your v1 API URL and auth token. The importer recreates users (prompting you once to map old roles to new ones), migrates theme presets, and imports each course. Existing users and courses are detected and skipped, and progress is saved as it goes — so if an import is interrupted you can re-run it and continue where it left off.
+You'll be asked to point at the export, and for your v1 API URL and auth token. The importer recreates users (prompting you once to map old roles to new ones), migrates theme presets, and imports each course. Each course keeps its original owner and sharing settings, remapped to the newly created users. Existing users and courses are detected and skipped, and progress is saved as it goes — so if an import is interrupted you can re-run it and continue where it left off.
 
-When it finishes you'll see a summary of how many courses succeeded, failed and were skipped.
+When it finishes you'll see a summary of how many courses succeeded, failed and were skipped, along with any warnings — courses that imported, but with something dropped along the way (an unmappable owner, a share with a user that no longer exists). Warnings are also saved to `import.json`.
 
 ---
 
@@ -64,6 +64,7 @@ When it finishes you'll see a summary of how many courses succeeded, failed and 
 
 - **Install your plugins and themes on the v1 instance before you import.** Legacy course content is migrated on import, but only up to the versions *already installed* — a plugin the instance doesn't have is installed at the old version out of the export, and its content is then never migrated. Migration will otherwise look like it ran while doing nothing for exactly the plugins that needed it.
 - **Hero images** were recently re-enabled — verify they appear correctly on imported courses before relying on it.
+- **Sharing and ownership** are migrated onto v1's `_access` object (`_isShared` → `_access.public`, `_shareWithUsers` → `_access.users`), and the original owner is restored with a follow-up patch after each import. Courses imported before this was added will have been left owned by the importing user, and — because v1 defaults `_access.public` to `true` — most likely visible to everyone. Check those before assuming they're private.
 - **Theme presets** are only applied to a course if that course's theme is installed in your v1 instance; otherwise the styling is dropped on import.
 - **Auth tokens and database details are stored in plain text** in the export folder. Treat it as sensitive.
 - This tool targets the specific `adapt_authoring` → `adapt-authoring` migration and is not a general-purpose tool.
