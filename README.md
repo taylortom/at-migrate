@@ -17,6 +17,7 @@ The two phases talk only through files on disk, so you can export and import on 
 - Local access to your **legacy `adapt_authoring` source tree**, with its dependencies installed (the exporter boots the legacy app to build courses).
 - Access to the legacy installation's **MongoDB** (the tool reads the connection string from its `conf/config.json`).
 - For import: the URL of your **v1 `adapt-authoring` API** and an **auth token** for a user with sufficient permissions.
+- The **import phase must run on the same machine as the v1 app** — it unpacks each course locally and hands the API a filesystem path, not an upload.
 
 ## Usage
 
@@ -61,6 +62,7 @@ When it finishes you'll see a summary of how many courses succeeded, failed and 
 
 ## Notes
 
+- **Install your plugins and themes on the v1 instance before you import.** Legacy course content is migrated on import, but only up to the versions *already installed* — a plugin the instance doesn't have is installed at the old version out of the export, and its content is then never migrated. Migration will otherwise look like it ran while doing nothing for exactly the plugins that needed it.
 - **Hero images** were recently re-enabled — verify they appear correctly on imported courses before relying on it.
 - **Sharing and ownership** are migrated onto v1's `_access` object (`_isShared` → `_access.public`, `_shareWithUsers` → `_access.users`), and the original owner is restored with a follow-up patch after each import. Courses imported before this was added will have been left owned by the importing user, and — because v1 defaults `_access.public` to `true` — most likely visible to everyone. Check those before assuming they're private.
 - **Theme presets** are only applied to a course if that course's theme is installed in your v1 instance; otherwise the styling is dropped on import.
