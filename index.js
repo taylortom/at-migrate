@@ -1,8 +1,13 @@
 #!/usr/bin/env node
 import Exporter from "./lib/Exporter.cjs";
 import Importer from "./lib/Importer.js";
+import { createRequire } from 'module';
 import path from 'path';
 import prompts from 'prompts';
+
+// read via createRequire rather than a JSON import so this still works on the Node 16 the
+// export phase may be stuck with, and resolves against this file rather than the cwd
+const { version } = createRequire(import.meta.url)('./package.json');
 
 async function run() {
   const [action, ...flags] = process.argv.slice(2);
@@ -11,7 +16,7 @@ async function run() {
   const LIMIT = flags.find(f => f.startsWith('--limit='))?.replace('--limit=', '');
   
   console.log(`##`);
-  console.log(`## at-migrate`);
+  console.log(`## at-migrate v${version}`);
   if(IS_DEBUG || LIMIT) console.log(`##`);
   if(IS_DEBUG) console.log(`## !! IS_DEBUG enabled`);
   if(LIMIT) console.log(`## !! LIMIT set to ${LIMIT}`);
