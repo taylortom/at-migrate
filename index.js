@@ -55,7 +55,22 @@ async function run() {
 async function runExport(options) {
   const exporter = new Exporter(options);
   await exporter.init();
-  return exporter.run();
+  const { status, warnings } = await exporter.run();
+  console.log(``);
+  console.log(`##`);
+  console.log(`## Export completed.`);
+  console.log(`##`);
+  console.log(`## Success: ${status.success.length}`);
+  console.log(`## Error: ${status.error.length}`);
+  console.log(`## Warnings: ${warnings.length}`);
+  if(warnings.length) {
+    // dirty legacy data is dropped rather than fatal now, so surface it: a warning buried in
+    // the log of a long run is easy to miss
+    console.log(`##`);
+    warnings.forEach(w => console.log(`## ! ${w}`));
+  }
+  console.log(`## See ${path.join(exporter.exportPath, 'export.json')} for full details.`);
+  console.log(`##`);
 }
 
 async function runImport(options) {

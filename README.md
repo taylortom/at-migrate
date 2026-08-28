@@ -48,6 +48,8 @@ npx taylortom/at-migrate export
 
 You'll be asked for the path to your legacy app and whether to force a full rebuild of each course. The export is written to an `at-migrate/` folder under your legacy app. If a previous export didn't finish, you can choose to continue or restart it.
 
+When it finishes you'll see a summary of how many courses succeeded and failed, along with any warnings — records that were exported with something dropped, or skipped entirely. Warnings are also saved to `export.json`.
+
 ### Importing
 
 ```bash
@@ -66,6 +68,7 @@ When it finishes you'll see a summary of how many courses succeeded, failed and 
 - **Hero images** were recently re-enabled — verify they appear correctly on imported courses before relying on it.
 - **Sharing and ownership** are migrated onto v1's `_access` object (`_isShared` → `_access.public`, `_shareWithUsers` → `_access.users`), and the original owner is restored with a follow-up patch after each import. Courses imported before this was added will have been left owned by the importing user, and — because v1 defaults `_access.public` to `true` — most likely visible to everyone. Check those before assuming they're private.
 - **Theme presets** are only applied to a course if that course's theme is installed in your v1 instance; otherwise the styling is dropped on import.
+- **Dirty legacy data is dropped, not fatal.** A user pointing at a role that no longer exists has that reference removed; one with no email address can't be recreated at all and is skipped, so any course it owns imports unowned. Neither stops the export any more, but both are reported in the summary and in `export.json` — read them before you import, as a user can end up with no roles.
 - **Auth tokens and database details are stored in plain text** in the export folder. Treat it as sensitive.
 - This tool targets the specific `adapt_authoring` → `adapt-authoring` migration and is not a general-purpose tool.
 
