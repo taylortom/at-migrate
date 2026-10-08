@@ -16,8 +16,8 @@ The two phases talk only through files on disk, so you can export and import on 
 - **Node.js** — the **export** phase needs 16.7+ (it can run on the legacy server); the **import** phase needs 18+ (ideally 22+).
 - Local access to your **legacy `adapt_authoring` source tree**, with its dependencies installed (the exporter boots the legacy app to build courses).
 - Access to the legacy installation's **MongoDB** (the tool reads the connection string from its `conf/config.json`).
-- For import: the URL of your **v1 `adapt-authoring` API** and an **auth token** for a user with sufficient permissions.
-- The **import phase must run on the same machine as the v1 app** — it unpacks each course locally and hands the API a filesystem path, not an upload.
+- For import: the URL of your **v1 `adapt-authoring` API** and an **auth token** for a user who can assign every role you map users to. v1 only lets a user assign the roles their own role manages, and never one granting scopes the token lacks — so a super user's token (which can't carry the super scope) can't assign roles at all. Use an unscoped token from an account whose role manages the target roles (e.g. one that can assign site administrators).
+- The import uploads each course to the v1 API, so it can run on any machine that can reach it. Check the target accepts uploads as large as your biggest course zip (v1's `importMaxFileSize`, default 1GB, and any proxy in front of it).
 
 ## Usage
 
