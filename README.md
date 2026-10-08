@@ -31,12 +31,17 @@ npx taylortom/at-migrate <action> [flags]
 |----------|----------------------------------------------------------|
 | `export` | Export content from a legacy installation to disk.       |
 | `import` | Import a previously exported bundle into a v1 instance.   |
+| `export-remote` | Export content from a legacy site over its web API, with no server access. |
 
 | Flag            | Applies to        | Description                                                       |
 |-----------------|-------------------|-------------------------------------------------------------------|
 | `--debug`       | `export`,`import` | Verbose logging and full stack traces on error.                   |
 | `--limit=<n>`   | `export`,`import` | Process at most `n` courses (handy for a trial run).              |
 | `--no-courses`  | `export`          | Export metadata only; skip building the course `.zip` files.      |
+| `--url=<url>`   | `export-remote`   | The legacy site's URL.                                            |
+| `--credentials=<file>` | `export-remote` | A JSON file holding `email` and `password` (or set `AT_MIGRATE_EMAIL`/`AT_MIGRATE_PASSWORD`). |
+| `--courses=<ids>` | `export-remote` | Comma-separated course ids to export; all courses by default.  |
+| `--out=<dir>`   | `export-remote`   | Where to write the bundle; defaults to `./at-migrate`.            |
 
 You will be prompted for anything not supplied on the command line.
 
@@ -49,6 +54,19 @@ npx taylortom/at-migrate export
 You'll be asked for the path to your legacy app and whether to force a full rebuild of each course. The export is written to an `at-migrate/` folder under your legacy app. If a previous export didn't finish, you can choose to continue or restart it.
 
 When it finishes you'll see a summary of how many courses succeeded and failed, along with any warnings — records that were exported with something dropped, or skipped entirely. Warnings are also saved to `export.json`.
+
+### Exporting remotely
+
+```bash
+npx taylortom/at-migrate export-remote --url=https://legacy.example.com --credentials=creds.json
+```
+
+Use this when you can reach the legacy site in a browser but not its server. It logs in as a **Super Admin** (once — a rejected login is never retried, so it can't lock the account), reads everything through the site's API, and assembles each course zip locally. It only ever reads from the site: no builds run on the server.
+
+The bundle has the same shape as a normal export and is imported the same way, with two differences:
+
+- **Plugin source isn't included.** Each course zip carries a `bower.json` stub per plugin (name, version, target attribute), which is enough for content migration. Install your plugins, theme and menu on the v1 instance first: a remote bundle never installs plugins, and any still missing on import are quarantined. A missing theme or menu fails that course.
+- **Schema defaults aren't baked in.** The legacy build fills in defaults (e.g. `_globals` strings) that the v1 import applies from its own schemas instead.
 
 ### Importing
 
