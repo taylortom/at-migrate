@@ -66,6 +66,12 @@ Use this when you can reach the legacy site in a browser but not its server. It 
 The bundle has the same shape as a normal export and is imported the same way, with two differences:
 
 - **Plugin source isn't included.** Each course zip carries a `bower.json` stub per plugin (name, version, target attribute), which is enough for content migration. Install your plugins, theme and menu on the v1 instance first: a remote bundle never installs plugins, and any still missing on import are quarantined. A missing theme or menu fails that course.
+- **Custom styling data is noted alongside the bundle**, in `theme-data/`. The v1 import drops theme and menu attributes when the plugin isn't installed, and classes and custom LESS only mean something against the theme they were written for, so this keeps a record for the theme migration:
+  - `themes/` and `menus/` — each theme's and menu's properties.schema, where it has one (legacy only keeps its `properties`).
+  - `<courseId>.json` — per course: every class and where it's used (from `_classes` or from rich text), inline styles in rich text, content carrying the theme's or menu's own attributes, theme variables and preset values that differ from the theme's defaults, the course's custom LESS with the variables and classes it references, and its screen-size breakpoints.
+  - `summary.json` — per theme and menu: the courses using it, and how many of them use each class, inline style property, LESS reference and set of breakpoints.
+
+  `export.json` also carries a short `theme` summary per course. Assets linked to a course's theme rather than its content aren't exported (as with a normal export), but are listed and warned about.
 - **Schema defaults aren't baked in.** The legacy build fills in defaults (e.g. `_globals` strings) that the v1 import applies from its own schemas instead.
 
 ### Importing
