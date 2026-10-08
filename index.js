@@ -31,6 +31,7 @@ async function run() {
     } catch(e) {
       console.log(e.message);
       if(IS_DEBUG) console.log(e.stack);
+      process.exitCode = 1;
     }
     process.exit();
   }
