@@ -1,7 +1,9 @@
 #!/usr/bin/env node
 import Exporter from "./lib/Exporter.cjs";
 import Importer from "./lib/Importer.js";
+import RemoteExporter from "./lib/RemoteExporter.js";
 import { createRequire } from 'module';
+import fs from 'fs/promises';
 import path from 'path';
 import prompts from 'prompts';
 
@@ -22,6 +24,17 @@ async function run() {
   if(LIMIT) console.log(`## !! LIMIT set to ${LIMIT}`);
   console.log(`##`);
   
+
+  if(action === 'export-remote') {
+    try {
+      await runRemoteExport({ flags, IS_DEBUG, LIMIT });
+    } catch(e) {
+      console.log(e.message);
+      if(IS_DEBUG) console.log(e.stack);
+      process.exitCode = 1;
+    }
+    process.exit();
+  }
 
   const { sourcePath } = await prompts([{
     type: 'text',
@@ -66,6 +79,40 @@ async function runExport(options) {
   if(warnings.length) {
     // dirty legacy data is dropped rather than fatal now, so surface it: a warning buried in
     // the log of a long run is easy to miss
+    console.log(`##`);
+    warnings.forEach(w => console.log(`## ! ${w}`));
+  }
+  console.log(`## See ${path.join(exporter.exportPath, 'export.json')} for full details.`);
+  console.log(`##`);
+}
+
+async function runRemoteExport({ flags, IS_DEBUG, LIMIT }) {
+  const flag = name => flags.find(f => f.startsWith(`--${name}=`))?.replace(`--${name}=`, '');
+  const credentialsFile = flag('credentials');
+  const fileCredentials = credentialsFile ? JSON.parse(await fs.readFile(credentialsFile)) : {};
+  const answers = await prompts([
+    { type: flag('url') ? null : 'text', name: 'siteUrl', message: 'Legacy site URL' },
+    { type: (fileCredentials.email || process.env.AT_MIGRATE_EMAIL) ? null : 'text', name: 'email', message: 'Super Admin email' },
+    { type: (fileCredentials.password || process.env.AT_MIGRATE_PASSWORD) ? null : 'password', name: 'password', message: 'Password' }
+  ]);
+  const exporter = new RemoteExporter({
+    siteUrl: flag('url') ?? answers.siteUrl,
+    email: fileCredentials.email ?? process.env.AT_MIGRATE_EMAIL ?? answers.email,
+    password: fileCredentials.password ?? process.env.AT_MIGRATE_PASSWORD ?? answers.password,
+    outputPath: path.resolve(flag('out') ?? path.join(process.cwd(), 'at-migrate')),
+    courseIds: flag('courses')?.split(',').filter(Boolean),
+    IS_DEBUG,
+    LIMIT
+  });
+  const { status, warnings } = await exporter.run();
+  console.log(``);
+  console.log(`##`);
+  console.log(`## Remote export completed.`);
+  console.log(`##`);
+  console.log(`## Success: ${status.success.length}`);
+  console.log(`## Error: ${status.error.length}`);
+  console.log(`## Warnings: ${warnings.length}`);
+  if(warnings.length) {
     console.log(`##`);
     warnings.forEach(w => console.log(`## ! ${w}`));
   }

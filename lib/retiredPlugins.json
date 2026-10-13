@@ -1,0 +1,18 @@
+{
+  "_comment": "Plugins removed from every course before import: their folder goes and they leave config._enabledPlugins, and the import then sanitises away their data, which no installed schema declares. List only plugins that hold nothing worth keeping. One a migration carries across (the background plugins, quicknav, the menus being replaced) or whose authored content must survive (a retiring component without a decided replacement) stays out: the import migrates it, or quarantines it with its content kept.",
+  "extensions": [
+    { "name": "adapt-notepad", "reason": "On the original blacklist (2025); no reason recorded" },
+    { "name": "adapt-iOSScrollFix", "reason": "Superseded: a v4-era iOS scrolling workaround, fixed in core" },
+    { "name": "adapt-custom", "reason": "Superseded: a v2-era catch-all that only re-fires the course completion check, which core does itself" },
+    { "name": "adapt-isResetOnRevisitFix", "reason": "Superseded: a v4-era reset-on-revisit bug fix, fixed in core" },
+    { "name": "adapt-googleTranslate", "reason": "Retired: Google withdrew the website translator for commercial sites" },
+    { "name": "adapt-nudge", "reason": "Retired: an interface cue with an archived repo and no authored content" },
+    { "name": "adapt-article-reveal", "reason": "Retired: archived, and switched off in every instance sampled" }
+  ],
+  "components": [
+    { "name": "adapt-input-memo", "reason": "Retired: used by no courses" },
+    { "name": "adapt-slidingPuzzle", "reason": "Retired: used by no courses" },
+    { "name": "adapt-walkgrove-flipcards", "reason": "Retired: used by no courses" }
+  ],
+  "menu": []
+}
